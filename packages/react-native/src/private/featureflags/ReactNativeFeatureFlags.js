@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<674f975884ae746e067e614523f2bfc3>>
+ * @generated SignedSource<<cabcb420c1f35ed469cdbd51ecb9ec6b>>
  * @flow strict
  * @noformat
  */
@@ -74,6 +74,7 @@ export type ReactNativeFeatureFlags = Readonly<{
   enableDoubleMeasurementFixAndroid: Getter<boolean>,
   enableEagerRootViewAttachment: Getter<boolean>,
   enableExclusivePropsUpdateAndroid: Getter<boolean>,
+  enableDeferredViewCleanupAndroid: Getter<boolean>,
   enableFabricCommitBranching: Getter<boolean>,
   enableFabricCommitBranchingMergeOnMainThread: Getter<boolean>,
   enableFabricLogs: Getter<boolean>,
@@ -322,6 +323,10 @@ export const enableEagerRootViewAttachment: Getter<boolean> = createNativeFlagGe
  * When enabled, Android will disable Props 1.5 raw value merging when Props 2.0 is available.
  */
 export const enableExclusivePropsUpdateAndroid: Getter<boolean> = createNativeFlagGetter('enableExclusivePropsUpdateAndroid', false);
+/**
+ * Experiment with retiring pure RCTView subtrees immediately and cleaning native descendants in bounded slices after drawing on Android
+ */
+export const enableDeferredViewCleanupAndroid: Getter<boolean> = createNativeFlagGetter('enableDeferredViewCleanupAndroid', false);
 /**
  * Enables Fabric commit branching to fix atomic JS updates.
  */

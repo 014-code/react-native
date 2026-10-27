@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<c305274be2fc6720b6c0eb75e78bd6b0>>
+ * @generated SignedSource<<251ad4ab6ff0822e4f97f0af2cdced13>>
  */
 
 /**
@@ -49,6 +49,7 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var enableDoubleMeasurementFixAndroidCache: Boolean? = null
   private var enableEagerRootViewAttachmentCache: Boolean? = null
   private var enableExclusivePropsUpdateAndroidCache: Boolean? = null
+  private var enableDeferredViewCleanupAndroidCache: Boolean? = null
   private var enableFabricCommitBranchingCache: Boolean? = null
   private var enableFabricCommitBranchingMergeOnMainThreadCache: Boolean? = null
   private var enableFabricLogsCache: Boolean? = null
@@ -368,6 +369,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.enableExclusivePropsUpdateAndroid()
       accessedFeatureFlags.add("enableExclusivePropsUpdateAndroid")
       enableExclusivePropsUpdateAndroidCache = cached
+    }
+    return cached
+  }
+
+  override fun enableDeferredViewCleanupAndroid(): Boolean {
+    var cached = enableDeferredViewCleanupAndroidCache
+    if (cached == null) {
+      cached = currentProvider.enableDeferredViewCleanupAndroid()
+      accessedFeatureFlags.add("enableDeferredViewCleanupAndroid")
+      enableDeferredViewCleanupAndroidCache = cached
     }
     return cached
   }

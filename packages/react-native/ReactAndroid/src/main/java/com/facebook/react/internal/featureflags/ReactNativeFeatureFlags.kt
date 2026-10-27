@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a89ede36c4631b7a7709899858a7f9c9>>
+ * @generated SignedSource<<75f103c04e8baecc3989a223cf68d129>>
  */
 
 /**
@@ -179,6 +179,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableExclusivePropsUpdateAndroid(): Boolean = accessor.enableExclusivePropsUpdateAndroid()
+
+  /**
+   * Experiment with retiring pure RCTView subtrees immediately and cleaning native descendants in bounded slices after drawing on Android
+   */
+  @JvmStatic
+  public fun enableDeferredViewCleanupAndroid(): Boolean = accessor.enableDeferredViewCleanupAndroid()
 
   /**
    * Enables Fabric commit branching to fix atomic JS updates.

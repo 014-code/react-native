@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<17f41335dce7e5b45e7af2878c47d69b>>
+ * @generated SignedSource<<37964d773f236d9a166b8f1e7ea0baef>>
  */
 
 /**
@@ -59,6 +59,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool enableDoubleMeasurementFixAndroid();
   bool enableEagerRootViewAttachment();
   bool enableExclusivePropsUpdateAndroid();
+  bool enableDeferredViewCleanupAndroid();
   bool enableFabricCommitBranching();
   bool enableFabricCommitBranchingMergeOnMainThread();
   bool enableFabricLogs();
@@ -142,7 +143,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::unique_ptr<ReactNativeFeatureFlagsProvider> currentProvider_;
   bool wasOverridden_;
 
-  std::array<std::atomic<const char*>, 97> accessedFeatureFlags_;
+  std::array<std::atomic<const char*>, 98> accessedFeatureFlags_;
 
   std::atomic<std::optional<bool>> commonTestFlag_;
   std::atomic<std::optional<bool>> cdpInteractionMetricsEnabled_;
@@ -169,6 +170,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> enableDoubleMeasurementFixAndroid_;
   std::atomic<std::optional<bool>> enableEagerRootViewAttachment_;
   std::atomic<std::optional<bool>> enableExclusivePropsUpdateAndroid_;
+  std::atomic<std::optional<bool>> enableDeferredViewCleanupAndroid_;
   std::atomic<std::optional<bool>> enableFabricCommitBranching_;
   std::atomic<std::optional<bool>> enableFabricCommitBranchingMergeOnMainThread_;
   std::atomic<std::optional<bool>> enableFabricLogs_;

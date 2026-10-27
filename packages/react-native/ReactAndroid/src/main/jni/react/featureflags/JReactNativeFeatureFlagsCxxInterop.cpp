@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<944781e7a547e601f0637869a3a3ec5e>>
+ * @generated SignedSource<<e4f17304a9da4177023ccd5a403066b7>>
  */
 
 /**
@@ -186,6 +186,12 @@ class ReactNativeFeatureFlagsJavaProvider
   bool enableExclusivePropsUpdateAndroid() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableExclusivePropsUpdateAndroid");
+    return method(javaProvider_);
+  }
+
+  bool enableDeferredViewCleanupAndroid() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableDeferredViewCleanupAndroid");
     return method(javaProvider_);
   }
 
@@ -750,6 +756,11 @@ bool JReactNativeFeatureFlagsCxxInterop::enableExclusivePropsUpdateAndroid(
   return ReactNativeFeatureFlags::enableExclusivePropsUpdateAndroid();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::enableDeferredViewCleanupAndroid(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::enableDeferredViewCleanupAndroid();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::enableFabricCommitBranching(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableFabricCommitBranching();
@@ -1216,6 +1227,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "enableExclusivePropsUpdateAndroid",
         JReactNativeFeatureFlagsCxxInterop::enableExclusivePropsUpdateAndroid),
+      makeNativeMethod(
+        "enableDeferredViewCleanupAndroid",
+        JReactNativeFeatureFlagsCxxInterop::enableDeferredViewCleanupAndroid),
       makeNativeMethod(
         "enableFabricCommitBranching",
         JReactNativeFeatureFlagsCxxInterop::enableFabricCommitBranching),
