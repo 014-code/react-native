@@ -100,6 +100,7 @@ internal class DeferredViewCleanupQueue {
     val task = Task(drawGeneration + 1, estimatedOperations, step)
     tasks.addLast(task)
     pendingOperations += estimatedOperations
+    tracePendingWork()
     Systrace.beginAsyncSection(
         Systrace.TRACE_TAG_REACT,
         "FabricDeferredCleanup::task",
@@ -113,15 +114,20 @@ internal class DeferredViewCleanupQueue {
 
   internal fun flush() {
     UiThreadUtil.assertOnUiThread()
-    handler.removeCallbacks(afterDraw)
-    handler.removeCallbacks(checkVisibility)
-    removeDrawListener()
-    posted = false
-    while (tasks.isNotEmpty()) {
-      val task = tasks.first
-      if (task.step() && tasks.peekFirst() === task) complete(task)
+    Systrace.beginSection(Systrace.TRACE_TAG_REACT, "FabricDeferredCleanup::flush")
+    try {
+      handler.removeCallbacks(afterDraw)
+      handler.removeCallbacks(checkVisibility)
+      removeDrawListener()
+      posted = false
+      while (tasks.isNotEmpty()) {
+        val task = tasks.first
+        if (task.step() && tasks.peekFirst() === task) complete(task)
+      }
+      root = null
+    } finally {
+      Systrace.endSection(Systrace.TRACE_TAG_REACT)
     }
-    root = null
   }
 
   private fun awaitDraw() {
@@ -134,7 +140,23 @@ internal class DeferredViewCleanupQueue {
   private fun complete(task: Task) {
     tasks.removeFirst()
     pendingOperations -= task.estimatedOperations
+    tracePendingWork()
     Systrace.endAsyncSection(Systrace.TRACE_TAG_REACT, "FabricDeferredCleanup::task", task.traceId)
+  }
+
+  private fun tracePendingWork() {
+    Systrace.traceCounter(
+        Systrace.TRACE_TAG_REACT,
+        "FabricDeferredCleanup::pendingTasks",
+        tasks.size,
+    )
+    // Reservations stay live until the task releases its captured view states. They are not a
+    // count of unfinished steps; production unmount plans reserve two operations per state.
+    Systrace.traceCounter(
+        Systrace.TRACE_TAG_REACT,
+        "FabricDeferredCleanup::reservedOperations",
+        pendingOperations,
+    )
   }
 
   private fun removeDrawListener() {

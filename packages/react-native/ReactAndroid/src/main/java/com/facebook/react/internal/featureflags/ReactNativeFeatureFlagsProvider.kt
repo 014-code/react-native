@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<f72429417d69bd91f5f5b9a2a1b1e501>>
+ * @generated SignedSource<<b615def1bb11733c7ca313d7cfc6fb57>>
  */
 
 /**
@@ -65,6 +65,8 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun enableCustomFocusSearchOnClippedElementsAndroid(): Boolean
 
+  @DoNotStrip public fun enableDeferredViewCleanupAndroid(): Boolean
+
   @DoNotStrip public fun enableDestroyShadowTreeRevisionAsync(): Boolean
 
   @DoNotStrip public fun enableDoubleMeasurementFixAndroid(): Boolean
@@ -72,8 +74,6 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun enableEagerRootViewAttachment(): Boolean
 
   @DoNotStrip public fun enableExclusivePropsUpdateAndroid(): Boolean
-
-  @DoNotStrip public fun enableDeferredViewCleanupAndroid(): Boolean
 
   @DoNotStrip public fun enableFabricCommitBranching(): Boolean
 

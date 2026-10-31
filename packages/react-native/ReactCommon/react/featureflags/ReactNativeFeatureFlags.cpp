@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<3fa767c991e5022313d8f711ee2b7a3d>>
+ * @generated SignedSource<<8313677038bc76a8e656eee1532d60f1>>
  */
 
 /**
@@ -110,6 +110,10 @@ bool ReactNativeFeatureFlags::enableCustomFocusSearchOnClippedElementsAndroid() 
   return getAccessor().enableCustomFocusSearchOnClippedElementsAndroid();
 }
 
+bool ReactNativeFeatureFlags::enableDeferredViewCleanupAndroid() {
+  return getAccessor().enableDeferredViewCleanupAndroid();
+}
+
 bool ReactNativeFeatureFlags::enableDestroyShadowTreeRevisionAsync() {
   return getAccessor().enableDestroyShadowTreeRevisionAsync();
 }
@@ -124,10 +128,6 @@ bool ReactNativeFeatureFlags::enableEagerRootViewAttachment() {
 
 bool ReactNativeFeatureFlags::enableExclusivePropsUpdateAndroid() {
   return getAccessor().enableExclusivePropsUpdateAndroid();
-}
-
-bool ReactNativeFeatureFlags::enableDeferredViewCleanupAndroid() {
-  return getAccessor().enableDeferredViewCleanupAndroid();
 }
 
 bool ReactNativeFeatureFlags::enableFabricCommitBranching() {

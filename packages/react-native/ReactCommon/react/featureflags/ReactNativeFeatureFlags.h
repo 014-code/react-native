@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<46e43a600b0d7b574bcd80aff3c619ed>>
+ * @generated SignedSource<<ef076bdb37bbe0cb18f1c846ae6fd353>>
  */
 
 /**
@@ -147,6 +147,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableCustomFocusSearchOnClippedElementsAndroid();
 
   /**
+   * Experiment with retiring pure RCTView subtrees immediately and cleaning native descendants in bounded slices after drawing on Android
+   */
+  RN_EXPORT static bool enableDeferredViewCleanupAndroid();
+
+  /**
    * Enables destructor calls for ShadowTreeRevision in the background to reduce UI thread work.
    */
   RN_EXPORT static bool enableDestroyShadowTreeRevisionAsync();
@@ -165,11 +170,6 @@ class ReactNativeFeatureFlags {
    * When enabled, Android will disable Props 1.5 raw value merging when Props 2.0 is available.
    */
   RN_EXPORT static bool enableExclusivePropsUpdateAndroid();
-
-  /**
-   * Experiment with retiring pure RCTView subtrees immediately and cleaning native descendants in bounded slices after drawing on Android
-   */
-  RN_EXPORT static bool enableDeferredViewCleanupAndroid();
 
   /**
    * Enables Fabric commit branching to fix atomic JS updates.

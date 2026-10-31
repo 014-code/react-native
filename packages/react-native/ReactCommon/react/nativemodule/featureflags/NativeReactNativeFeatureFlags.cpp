@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<3f8f29d5785e6141dd33819fe14940b1>>
+ * @generated SignedSource<<b7241bafb198c6d132d007e95bbe1613>>
  */
 
 /**
@@ -149,6 +149,11 @@ bool NativeReactNativeFeatureFlags::enableCustomFocusSearchOnClippedElementsAndr
   return ReactNativeFeatureFlags::enableCustomFocusSearchOnClippedElementsAndroid();
 }
 
+bool NativeReactNativeFeatureFlags::enableDeferredViewCleanupAndroid(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::enableDeferredViewCleanupAndroid();
+}
+
 bool NativeReactNativeFeatureFlags::enableDestroyShadowTreeRevisionAsync(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::enableDestroyShadowTreeRevisionAsync();
@@ -167,11 +172,6 @@ bool NativeReactNativeFeatureFlags::enableEagerRootViewAttachment(
 bool NativeReactNativeFeatureFlags::enableExclusivePropsUpdateAndroid(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::enableExclusivePropsUpdateAndroid();
-}
-
-bool NativeReactNativeFeatureFlags::enableDeferredViewCleanupAndroid(
-    jsi::Runtime& /*runtime*/) {
-  return ReactNativeFeatureFlags::enableDeferredViewCleanupAndroid();
 }
 
 bool NativeReactNativeFeatureFlags::enableFabricCommitBranching(

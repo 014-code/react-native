@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<bf7f79b36a0a1fa7f0e6a0741cd10606>>
+ * @generated SignedSource<<e621eb9cabce7e9684d15e15125e4ecc>>
  */
 
 /**
@@ -236,6 +236,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::enableCustomFocusSearchOnClippedElementsAndroid();
   }
 
+  bool enableDeferredViewCleanupAndroid() override {
+    auto value = values_["enableDeferredViewCleanupAndroid"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::enableDeferredViewCleanupAndroid();
+  }
+
   bool enableDestroyShadowTreeRevisionAsync() override {
     auto value = values_["enableDestroyShadowTreeRevisionAsync"];
     if (!value.isNull()) {
@@ -270,15 +279,6 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::enableExclusivePropsUpdateAndroid();
-  }
-
-  bool enableDeferredViewCleanupAndroid() override {
-    auto value = values_["enableDeferredViewCleanupAndroid"];
-    if (!value.isNull()) {
-      return value.getBool();
-    }
-
-    return ReactNativeFeatureFlagsDefaults::enableDeferredViewCleanupAndroid();
   }
 
   bool enableFabricCommitBranching() override {

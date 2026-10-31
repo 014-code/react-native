@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<0d765712be6a4bb55a77e246459c97c0>>
+ * @generated SignedSource<<7b50b4eadcdd21f53b9e23b58c3b59bc>>
  */
 
 /**
@@ -407,6 +407,24 @@ bool ReactNativeFeatureFlagsAccessor::enableCustomFocusSearchOnClippedElementsAn
   return flagValue.value();
 }
 
+bool ReactNativeFeatureFlagsAccessor::enableDeferredViewCleanupAndroid() {
+  auto flagValue = enableDeferredViewCleanupAndroid_.load();
+
+  if (!flagValue.has_value()) {
+    // This block is not exclusive but it is not necessary.
+    // If multiple threads try to initialize the feature flag, we would only
+    // be accessing the provider multiple times but the end state of this
+    // instance and the returned flag value would be the same.
+
+    markFlagAsAccessed(21, "enableDeferredViewCleanupAndroid");
+
+    flagValue = currentProvider_->enableDeferredViewCleanupAndroid();
+    enableDeferredViewCleanupAndroid_ = flagValue;
+  }
+
+  return flagValue.value();
+}
+
 bool ReactNativeFeatureFlagsAccessor::enableDestroyShadowTreeRevisionAsync() {
   auto flagValue = enableDestroyShadowTreeRevisionAsync_.load();
 
@@ -416,7 +434,7 @@ bool ReactNativeFeatureFlagsAccessor::enableDestroyShadowTreeRevisionAsync() {
     // be accessing the provider multiple times but the end state of this
     // instance and the returned flag value would be the same.
 
-    markFlagAsAccessed(21, "enableDestroyShadowTreeRevisionAsync");
+    markFlagAsAccessed(22, "enableDestroyShadowTreeRevisionAsync");
 
     flagValue = currentProvider_->enableDestroyShadowTreeRevisionAsync();
     enableDestroyShadowTreeRevisionAsync_ = flagValue;
@@ -434,7 +452,7 @@ bool ReactNativeFeatureFlagsAccessor::enableDoubleMeasurementFixAndroid() {
     // be accessing the provider multiple times but the end state of this
     // instance and the returned flag value would be the same.
 
-    markFlagAsAccessed(22, "enableDoubleMeasurementFixAndroid");
+    markFlagAsAccessed(23, "enableDoubleMeasurementFixAndroid");
 
     flagValue = currentProvider_->enableDoubleMeasurementFixAndroid();
     enableDoubleMeasurementFixAndroid_ = flagValue;
@@ -452,7 +470,7 @@ bool ReactNativeFeatureFlagsAccessor::enableEagerRootViewAttachment() {
     // be accessing the provider multiple times but the end state of this
     // instance and the returned flag value would be the same.
 
-    markFlagAsAccessed(23, "enableEagerRootViewAttachment");
+    markFlagAsAccessed(24, "enableEagerRootViewAttachment");
 
     flagValue = currentProvider_->enableEagerRootViewAttachment();
     enableEagerRootViewAttachment_ = flagValue;
@@ -470,28 +488,10 @@ bool ReactNativeFeatureFlagsAccessor::enableExclusivePropsUpdateAndroid() {
     // be accessing the provider multiple times but the end state of this
     // instance and the returned flag value would be the same.
 
-    markFlagAsAccessed(24, "enableExclusivePropsUpdateAndroid");
+    markFlagAsAccessed(25, "enableExclusivePropsUpdateAndroid");
 
     flagValue = currentProvider_->enableExclusivePropsUpdateAndroid();
     enableExclusivePropsUpdateAndroid_ = flagValue;
-  }
-
-  return flagValue.value();
-}
-
-bool ReactNativeFeatureFlagsAccessor::enableDeferredViewCleanupAndroid() {
-  auto flagValue = enableDeferredViewCleanupAndroid_.load();
-
-  if (!flagValue.has_value()) {
-    // This block is not exclusive but it is not necessary.
-    // If multiple threads try to initialize the feature flag, we would only
-    // be accessing the provider multiple times but the end state of this
-    // instance and the returned flag value would be the same.
-
-    markFlagAsAccessed(25, "enableDeferredViewCleanupAndroid");
-
-    flagValue = currentProvider_->enableDeferredViewCleanupAndroid();
-    enableDeferredViewCleanupAndroid_ = flagValue;
   }
 
   return flagValue.value();

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<75f103c04e8baecc3989a223cf68d129>>
+ * @generated SignedSource<<14dfef8b603befedcad6aa4d9cab2a6f>>
  */
 
 /**
@@ -157,6 +157,12 @@ public object ReactNativeFeatureFlags {
   public fun enableCustomFocusSearchOnClippedElementsAndroid(): Boolean = accessor.enableCustomFocusSearchOnClippedElementsAndroid()
 
   /**
+   * Experiment with retiring pure RCTView subtrees immediately and cleaning native descendants in bounded slices after drawing on Android
+   */
+  @JvmStatic
+  public fun enableDeferredViewCleanupAndroid(): Boolean = accessor.enableDeferredViewCleanupAndroid()
+
+  /**
    * Enables destructor calls for ShadowTreeRevision in the background to reduce UI thread work.
    */
   @JvmStatic
@@ -179,12 +185,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableExclusivePropsUpdateAndroid(): Boolean = accessor.enableExclusivePropsUpdateAndroid()
-
-  /**
-   * Experiment with retiring pure RCTView subtrees immediately and cleaning native descendants in bounded slices after drawing on Android
-   */
-  @JvmStatic
-  public fun enableDeferredViewCleanupAndroid(): Boolean = accessor.enableDeferredViewCleanupAndroid()
 
   /**
    * Enables Fabric commit branching to fix atomic JS updates.

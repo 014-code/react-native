@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<2eb6c29c91b70f64cc25669d2c9a9f1c>>
+ * @generated SignedSource<<039bc767886a7cef3e32a4cfad6a9c4d>>
  */
 
 /**
@@ -41,11 +41,11 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var enableBridgelessArchitectureCache: Boolean? = null
   private var enableCppPropsIteratorSetterCache: Boolean? = null
   private var enableCustomFocusSearchOnClippedElementsAndroidCache: Boolean? = null
+  private var enableDeferredViewCleanupAndroidCache: Boolean? = null
   private var enableDestroyShadowTreeRevisionAsyncCache: Boolean? = null
   private var enableDoubleMeasurementFixAndroidCache: Boolean? = null
   private var enableEagerRootViewAttachmentCache: Boolean? = null
   private var enableExclusivePropsUpdateAndroidCache: Boolean? = null
-  private var enableDeferredViewCleanupAndroidCache: Boolean? = null
   private var enableFabricCommitBranchingCache: Boolean? = null
   private var enableFabricCommitBranchingMergeOnMainThreadCache: Boolean? = null
   private var enableFabricLogsCache: Boolean? = null
@@ -308,6 +308,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     return cached
   }
 
+  override fun enableDeferredViewCleanupAndroid(): Boolean {
+    var cached = enableDeferredViewCleanupAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.enableDeferredViewCleanupAndroid()
+      enableDeferredViewCleanupAndroidCache = cached
+    }
+    return cached
+  }
+
   override fun enableDestroyShadowTreeRevisionAsync(): Boolean {
     var cached = enableDestroyShadowTreeRevisionAsyncCache
     if (cached == null) {
@@ -340,15 +349,6 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.enableExclusivePropsUpdateAndroid()
       enableExclusivePropsUpdateAndroidCache = cached
-    }
-    return cached
-  }
-
-  override fun enableDeferredViewCleanupAndroid(): Boolean {
-    var cached = enableDeferredViewCleanupAndroidCache
-    if (cached == null) {
-      cached = ReactNativeFeatureFlagsCxxInterop.enableDeferredViewCleanupAndroid()
-      enableDeferredViewCleanupAndroidCache = cached
     }
     return cached
   }

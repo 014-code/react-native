@@ -10,6 +10,7 @@ package com.facebook.react.fabric
 import android.app.Activity
 import android.os.Looper
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.widget.FrameLayout
 import com.facebook.react.bridge.JavaOnlyMap
@@ -36,8 +37,13 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.mockingDetails
+import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.spy
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -164,6 +170,81 @@ class DeferredViewCleanupTest {
     assertThat(child.parent).isNull()
     drawAndDrain()
     assertThat(child.parent).isNull()
+  }
+
+  @Test
+  fun stoppingSurfaceEvictsPoolBeforeDroppingPendingViews() {
+    startRecyclingSurface()
+    val panel = mount(2, 1)
+    val child = mount(4, 2)
+    unmount()
+    assertThat(child.parent).isSameAs(panel)
+    verify(viewManager, never()).onDropViewInstance(any())
+
+    surface.stopSurface()
+
+    val ordered = inOrder(viewManager)
+    ordered.verify(viewManager).onSurfaceStopped(1)
+    ordered.verify(viewManager).onDropViewInstance(child)
+    ordered.verify(viewManager).onDropViewInstance(panel)
+    assertThat(
+            mockingDetails(viewManager).invocations.none {
+              it.method.name == "prepareToRecycleView"
+            }
+        )
+        .isTrue()
+    assertThat(child.parent).isNull()
+    drawAndDrain()
+    shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(300))
+    verify(viewManager, times(1)).onDropViewInstance(child)
+    verify(viewManager, times(1)).onDropViewInstance(panel)
+
+    surface = manager.startSurface(1, context, root)
+    val replacement = mount(2, 1)
+    assertThat(replacement).isNotSameAs(panel).isNotSameAs(child)
+  }
+
+  @Test
+  fun stoppingSurfaceDuringCleanupEvictsPoolBeforeRemainingDrops() {
+    startRecyclingSurface()
+    val panel = mount(2, 1)
+    val child = mount(4, 2)
+    unmount()
+    panel.setOnHierarchyChangeListener(
+        object : ViewGroup.OnHierarchyChangeListener {
+          override fun onChildViewAdded(parent: View, child: View) = Unit
+
+          override fun onChildViewRemoved(parent: View, child: View) {
+            surface.stopSurface()
+          }
+        }
+    )
+    drawAndDrain()
+    assertThat(surface.isStopped).isTrue()
+    assertThat(child.parent).isNull()
+    val ordered = inOrder(viewManager)
+    ordered.verify(viewManager).onSurfaceStopped(1)
+    ordered.verify(viewManager).onDropViewInstance(child)
+    ordered.verify(viewManager).onDropViewInstance(panel)
+    assertThat(
+            mockingDetails(viewManager).invocations.none {
+              it.method.name == "prepareToRecycleView"
+            }
+        )
+        .isTrue()
+    drawAndDrain()
+    verify(viewManager, times(1)).onDropViewInstance(child)
+    verify(viewManager, times(1)).onDropViewInstance(panel)
+  }
+
+  private fun startRecyclingSurface() {
+    surface.stopSurface()
+    configure(true, recycling = true)
+    // mockito-inline preserves the exact core manager class required by validation.
+    viewManager = spy(ReactViewManager())
+    assertThat(viewManager.javaClass).isEqualTo(ReactViewManager::class.java)
+    manager = MountingManager(ViewManagerRegistry(listOf(viewManager)), MountItemExecutor {})
+    surface = manager.startSurface(1, context, root)
   }
 
   @Test
@@ -512,6 +593,81 @@ class DeferredViewCleanupTest {
         )
         .execute(manager)
     assertThat(child.parent).isNull()
+  }
+
+  @Test
+  fun layoutAndOverflowUpdatesKeepOriginalSynchronousPath() {
+    val sibling = mount(6, 1)
+    mount(2, 1, 1)
+    val child = mount(4, 2)
+    IntBufferBatchMountItem(
+            1,
+            intArrayOf(
+                17,
+                2,
+                4,
+                2,
+                0,
+                2,
+                1,
+                1,
+                5,
+                2,
+                4,
+                2,
+                IntBufferBatchMountItem.INSTRUCTION_UPDATE_LAYOUT,
+                6,
+                1,
+                0,
+                0,
+                40,
+                20,
+                1,
+                1,
+                IntBufferBatchMountItem.INSTRUCTION_UPDATE_OVERFLOW_INSET,
+                6,
+                0,
+                0,
+                0,
+                0,
+            ),
+            emptyArray(),
+            0,
+        )
+        .execute(manager)
+    assertThat(child.parent).isNull()
+    assertThat(sibling.parent).isSameAs(root)
+    assertThat(sibling.width).isEqualTo(40)
+    assertThat(sibling.height).isEqualTo(20)
+    assertThat(surface.getViewExists(2)).isFalse()
+    drawAndDrain()
+    assertThat(surface.getView(6)).isSameAs(sibling)
+  }
+
+  @Test
+  fun subtreeAboveAdmissionLimitKeepsOriginalSynchronousPath() {
+    val stateCount = DeferredViewCleanupQueue.MAX_PENDING_OPERATIONS / 2 + 1
+    val panel = mount(2, 1)
+    val children = (1 until stateCount).map { index -> mount(2 + index * 2, 2, index - 1) }
+    val instructions = ArrayList<Int>()
+    instructions.add(IntBufferBatchMountItem.INSTRUCTION_REMOVE or 1)
+    instructions.add(stateCount)
+    for (index in children.indices.reversed()) {
+      instructions.add(children[index].id)
+      instructions.add(2)
+      instructions.add(index)
+    }
+    instructions.addAll(listOf(2, 1, 0))
+    instructions.add(IntBufferBatchMountItem.INSTRUCTION_DELETE or 1)
+    instructions.add(stateCount)
+    instructions.addAll(children.map { it.id })
+    instructions.add(2)
+    IntBufferBatchMountItem(1, instructions.toIntArray(), emptyArray(), 0).execute(manager)
+    assertThat(panel.parent).isNull()
+    assertThat(panel.childCount).isZero()
+    assertThat(children).allSatisfy { assertThat(it.parent).isNull() }
+    assertThat(surface.getViewExists(2)).isFalse()
+    assertThat(root.childCount).isZero()
   }
 
   @Test

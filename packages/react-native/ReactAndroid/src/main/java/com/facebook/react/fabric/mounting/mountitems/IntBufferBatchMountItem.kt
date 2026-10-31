@@ -373,8 +373,14 @@ internal class IntBufferBatchMountItem(
     return parsed != null && surface.tryDeferPureViewUnmount(parsed.first, parsed.second)
   }
 
+  private fun rejectPureViewUnmount(reason: String): Pair<List<IntArray>, List<Int>>? {
+    Systrace.beginSection(Systrace.TRACE_TAG_REACT, reason)
+    Systrace.endSection(Systrace.TRACE_TAG_REACT)
+    return null
+  }
+
   private fun parsePureViewUnmount(): Pair<List<IntArray>, List<Int>>? {
-    if (objBufferLen != 0) return null
+    if (objBufferLen != 0) return rejectPureViewUnmount("FabricDeferredUnmount::rejectObjectBuffer")
     val removes = ArrayList<IntArray>()
     val deletes = ArrayList<Int>()
     var deleting = false
@@ -384,24 +390,27 @@ internal class IntBufferBatchMountItem(
       val type = rawType and INSTRUCTION_FLAG_MULTIPLE.inv()
       val count =
           if (rawType and INSTRUCTION_FLAG_MULTIPLE != 0) {
-            if (index >= intBufferLen) return null
+            if (index >= intBufferLen)
+                return rejectPureViewUnmount("FabricDeferredUnmount::rejectMalformed")
             intBuffer[index++]
           } else 1
-      if (count <= 0 || count > 4096) return null
+      if (count <= 0 || count > 4096)
+          return rejectPureViewUnmount("FabricDeferredUnmount::rejectCount")
       when (type) {
         INSTRUCTION_REMOVE -> {
           if (deleting || count > (intBufferLen - index) / 3 || removes.size + count > 4096)
-              return null
+              return rejectPureViewUnmount("FabricDeferredUnmount::rejectRemovePhase")
           repeat(count) {
             removes.add(intArrayOf(intBuffer[index++], intBuffer[index++], intBuffer[index++]))
           }
         }
         INSTRUCTION_DELETE -> {
           deleting = true
-          if (count > intBufferLen - index || deletes.size + count > 4096) return null
+          if (count > intBufferLen - index || deletes.size + count > 4096)
+              return rejectPureViewUnmount("FabricDeferredUnmount::rejectCount")
           repeat(count) { deletes.add(intBuffer[index++]) }
         }
-        else -> return null
+        else -> return rejectPureViewUnmount("FabricDeferredUnmount::rejectMixedInstruction")
       }
     }
     return removes to deletes

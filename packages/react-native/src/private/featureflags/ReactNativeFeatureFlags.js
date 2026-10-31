@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<cabcb420c1f35ed469cdbd51ecb9ec6b>>
+ * @generated SignedSource<<8cdfb2126d4af4c32e114fc4531e995a>>
  * @flow strict
  * @noformat
  */
@@ -70,11 +70,11 @@ export type ReactNativeFeatureFlags = Readonly<{
   enableBridgelessArchitecture: Getter<boolean>,
   enableCppPropsIteratorSetter: Getter<boolean>,
   enableCustomFocusSearchOnClippedElementsAndroid: Getter<boolean>,
+  enableDeferredViewCleanupAndroid: Getter<boolean>,
   enableDestroyShadowTreeRevisionAsync: Getter<boolean>,
   enableDoubleMeasurementFixAndroid: Getter<boolean>,
   enableEagerRootViewAttachment: Getter<boolean>,
   enableExclusivePropsUpdateAndroid: Getter<boolean>,
-  enableDeferredViewCleanupAndroid: Getter<boolean>,
   enableFabricCommitBranching: Getter<boolean>,
   enableFabricCommitBranchingMergeOnMainThread: Getter<boolean>,
   enableFabricLogs: Getter<boolean>,
@@ -308,6 +308,10 @@ export const enableCppPropsIteratorSetter: Getter<boolean> = createNativeFlagGet
  */
 export const enableCustomFocusSearchOnClippedElementsAndroid: Getter<boolean> = createNativeFlagGetter('enableCustomFocusSearchOnClippedElementsAndroid', true);
 /**
+ * Experiment with retiring pure RCTView subtrees immediately and cleaning native descendants in bounded slices after drawing on Android
+ */
+export const enableDeferredViewCleanupAndroid: Getter<boolean> = createNativeFlagGetter('enableDeferredViewCleanupAndroid', false);
+/**
  * Enables destructor calls for ShadowTreeRevision in the background to reduce UI thread work.
  */
 export const enableDestroyShadowTreeRevisionAsync: Getter<boolean> = createNativeFlagGetter('enableDestroyShadowTreeRevisionAsync', false);
@@ -323,10 +327,6 @@ export const enableEagerRootViewAttachment: Getter<boolean> = createNativeFlagGe
  * When enabled, Android will disable Props 1.5 raw value merging when Props 2.0 is available.
  */
 export const enableExclusivePropsUpdateAndroid: Getter<boolean> = createNativeFlagGetter('enableExclusivePropsUpdateAndroid', false);
-/**
- * Experiment with retiring pure RCTView subtrees immediately and cleaning native descendants in bounded slices after drawing on Android
- */
-export const enableDeferredViewCleanupAndroid: Getter<boolean> = createNativeFlagGetter('enableDeferredViewCleanupAndroid', false);
 /**
  * Enables Fabric commit branching to fix atomic JS updates.
  */

@@ -278,6 +278,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    enableDeferredViewCleanupAndroid: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-10-27',
+        description:
+          'Experiment with retiring pure RCTView subtrees immediately and cleaning native descendants in bounded slices after drawing on Android',
+        expectedReleaseValue: false,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     enableDestroyShadowTreeRevisionAsync: {
       defaultValue: false,
       metadata: {
@@ -319,17 +330,6 @@ const definitions: FeatureFlagDefinitions = {
         description:
           'When enabled, Android will disable Props 1.5 raw value merging when Props 2.0 is available.',
         expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
-    enableDeferredViewCleanupAndroid: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2026-10-27',
-        description:
-          'Experiment with retiring pure RCTView subtrees immediately and cleaning native descendants in bounded slices after drawing on Android',
-        expectedReleaseValue: false,
         purpose: 'experimentation',
       },
       ossReleaseStage: 'none',

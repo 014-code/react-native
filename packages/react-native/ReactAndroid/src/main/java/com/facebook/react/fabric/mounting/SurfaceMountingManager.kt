@@ -256,11 +256,12 @@ internal constructor(
     }
 
     val runnable = Runnable {
-      // Retired views no longer live in tagToViewState. Drain before evicting recycling pools.
-      deferredViewCleanup?.flush()
       if (ReactNativeFeatureFlags.enableViewRecycling()) {
         viewManagerRegistry?.onSurfaceStopped(surfaceId)
       }
+      // Retired views no longer live in tagToViewState. Evict pools first so flushing them does
+      // not prepare views for recycling on a surface that has already stopped.
+      deferredViewCleanup?.flush()
 
       // Using this as a placeholder value in the map. We're using SparseArrayCompat
       // since it can efficiently represent the list of pending tags
@@ -449,6 +450,13 @@ internal constructor(
       }
       removeIndex == plan.childParents.size && deleteIndex == plan.states.size
     }
+    Systrace.beginSection(Systrace.TRACE_TAG_REACT, "FabricDeferredUnmount::accepted")
+    Systrace.traceCounter(
+        Systrace.TRACE_TAG_REACT,
+        "FabricDeferredUnmount::states",
+        plan.states.size,
+    )
+    Systrace.endSection(Systrace.TRACE_TAG_REACT)
     return true
   }
 
@@ -464,41 +472,59 @@ internal constructor(
     var lastIndex: Int = Int.MAX_VALUE
   }
 
+  private fun rejectDeferredUnmount(reason: String): DeferredUnmount? {
+    Systrace.beginSection(Systrace.TRACE_TAG_REACT, reason)
+    Systrace.endSection(Systrace.TRACE_TAG_REACT)
+    return null
+  }
+
   private fun validateDeferredUnmount(
       removes: List<IntArray>,
       deletes: List<Int>,
   ): DeferredUnmount? {
+    if (isStopped) return rejectDeferredUnmount("FabricDeferredUnmount::rejectSurface")
+    if (deletes.size !in 2..4096) {
+      return rejectDeferredUnmount("FabricDeferredUnmount::rejectSize")
+    }
     if (
-        isStopped ||
-            deletes.size !in 2..4096 ||
-            deletes.size > DeferredViewCleanupQueue.MAX_PENDING_OPERATIONS / 2 ||
+        deletes.size > DeferredViewCleanupQueue.MAX_PENDING_OPERATIONS / 2 ||
             deferredViewCleanup?.hasCapacityFor(deletes.size * 2) == false
     ) {
-      return null
+      return rejectDeferredUnmount("FabricDeferredUnmount::rejectCapacity")
     }
-    val root = getNullableViewState(surfaceId)?.view ?: return null
-    if (!root.isAttachedToWindow) return null
-    if (removes.size != deletes.size) return null
+    val root =
+        getNullableViewState(surfaceId)?.view
+            ?: return rejectDeferredUnmount("FabricDeferredUnmount::rejectSurface")
+    if (!root.isAttachedToWindow)
+        return rejectDeferredUnmount("FabricDeferredUnmount::rejectSurface")
+    if (removes.size != deletes.size)
+        return rejectDeferredUnmount("FabricDeferredUnmount::rejectMembership")
     // One index handles membership, duplicate DELETEs, and state lookup.
     val stateIndices = HashMap<Int, Int>(deletes.size)
     for (index in deletes.indices) {
-      if (stateIndices.put(deletes[index], index) != null) return null
+      if (stateIndices.put(deletes[index], index) != null)
+          return rejectDeferredUnmount("FabricDeferredUnmount::rejectMembership")
     }
     val removed = BooleanArray(deletes.size)
     val removeStateIndices = IntArray(removes.size)
     for (index in removes.indices) {
       val remove = removes[index]
-      if (remove.size != 3) return null
+      if (remove.size != 3) return rejectDeferredUnmount("FabricDeferredUnmount::rejectMembership")
       val stateIndex = stateIndices.getOrDefault(remove[0], -1)
-      if (stateIndex < 0 || removed[stateIndex]) return null
+      if (stateIndex < 0 || removed[stateIndex])
+          return rejectDeferredUnmount("FabricDeferredUnmount::rejectMembership")
       removed[stateIndex] = true
       removeStateIndices[index] = stateIndex
     }
 
     val states = ArrayList<ViewState>(deletes.size)
     for (tag in deletes) {
-      val state = getNullableViewState(tag) ?: return null
-      val view = state.view as? ReactViewGroup ?: return null
+      val state =
+          getNullableViewState(tag)
+              ?: return rejectDeferredUnmount("FabricDeferredUnmount::rejectMembership")
+      val view =
+          state.view as? ReactViewGroup
+              ?: return rejectDeferredUnmount("FabricDeferredUnmount::rejectView")
       // An exact class check is deliberate: arbitrary manager callbacks may observe attachment.
       if (
           state.isRoot ||
@@ -511,7 +537,7 @@ internal constructor(
               tag in viewsWithActiveTouches ||
               tag in erroneouslyReaddedReactTags
       )
-          return null
+          return rejectDeferredUnmount("FabricDeferredUnmount::rejectView")
       states.add(state)
     }
     for (state in states) {
@@ -519,7 +545,8 @@ internal constructor(
       for (index in 0 until view.childCount) {
         val child = view.getChildAt(index)
         val childIndex = stateIndices.getOrDefault(child.id, -1)
-        if (childIndex < 0 || states[childIndex].view !== child) return null
+        if (childIndex < 0 || states[childIndex].view !== child)
+            return rejectDeferredUnmount("FabricDeferredUnmount::rejectChildren")
       }
     }
 
@@ -537,8 +564,12 @@ internal constructor(
         val parentIndex = stateIndices.getOrDefault(parentTag, -1)
         val parentState =
             if (parentIndex >= 0) states[parentIndex]
-            else getNullableViewState(parentTag) ?: return null
-        val parentView = parentState.view as? ViewGroup ?: return null
+            else
+                getNullableViewState(parentTag)
+                    ?: return rejectDeferredUnmount("FabricDeferredUnmount::rejectParent")
+        val parentView =
+            parentState.view as? ViewGroup
+                ?: return rejectDeferredUnmount("FabricDeferredUnmount::rejectParent")
         if (
             (!parentState.isRoot &&
                 (parentState.viewManager?.javaClass != ReactViewManager::class.java ||
@@ -547,7 +578,7 @@ internal constructor(
                 parentView.animation != null ||
                 parentView.hasTransientState()
         )
-            return null
+            return rejectDeferredUnmount("FabricDeferredUnmount::rejectParent")
         parent = DeferredUnmountParent(parentState, parentView)
         parents[parentTag] = parent
       }
@@ -556,7 +587,7 @@ internal constructor(
               index >= parent.lastIndex ||
               parent.view.getChildAt(index) !== states[stateIndex].view
       )
-          return null
+          return rejectDeferredUnmount("FabricDeferredUnmount::rejectIndices")
       parent.lastIndex = index
       if (!stateIndices.containsKey(parentTag)) {
         roots.add(remove)
@@ -565,7 +596,8 @@ internal constructor(
         childParents.add(parent)
       }
     }
-    if (roots.isEmpty() || childParents.isEmpty()) return null
+    if (roots.isEmpty() || childParents.isEmpty())
+        return rejectDeferredUnmount("FabricDeferredUnmount::rejectNoSubtree")
     // Validation is read-only. All unsupported batches take the original path unchanged.
     return DeferredUnmount(root, states, roots, childParents, childIndices)
   }

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<e4f17304a9da4177023ccd5a403066b7>>
+ * @generated SignedSource<<46cd2c8c31b559149f3126fd9f37551f>>
  */
 
 /**
@@ -165,6 +165,12 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool enableDeferredViewCleanupAndroid() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableDeferredViewCleanupAndroid");
+    return method(javaProvider_);
+  }
+
   bool enableDestroyShadowTreeRevisionAsync() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableDestroyShadowTreeRevisionAsync");
@@ -186,12 +192,6 @@ class ReactNativeFeatureFlagsJavaProvider
   bool enableExclusivePropsUpdateAndroid() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableExclusivePropsUpdateAndroid");
-    return method(javaProvider_);
-  }
-
-  bool enableDeferredViewCleanupAndroid() override {
-    static const auto method =
-        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableDeferredViewCleanupAndroid");
     return method(javaProvider_);
   }
 
@@ -736,6 +736,11 @@ bool JReactNativeFeatureFlagsCxxInterop::enableCustomFocusSearchOnClippedElement
   return ReactNativeFeatureFlags::enableCustomFocusSearchOnClippedElementsAndroid();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::enableDeferredViewCleanupAndroid(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::enableDeferredViewCleanupAndroid();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::enableDestroyShadowTreeRevisionAsync(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableDestroyShadowTreeRevisionAsync();
@@ -754,11 +759,6 @@ bool JReactNativeFeatureFlagsCxxInterop::enableEagerRootViewAttachment(
 bool JReactNativeFeatureFlagsCxxInterop::enableExclusivePropsUpdateAndroid(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableExclusivePropsUpdateAndroid();
-}
-
-bool JReactNativeFeatureFlagsCxxInterop::enableDeferredViewCleanupAndroid(
-    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
-  return ReactNativeFeatureFlags::enableDeferredViewCleanupAndroid();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::enableFabricCommitBranching(
@@ -1216,6 +1216,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "enableCustomFocusSearchOnClippedElementsAndroid",
         JReactNativeFeatureFlagsCxxInterop::enableCustomFocusSearchOnClippedElementsAndroid),
       makeNativeMethod(
+        "enableDeferredViewCleanupAndroid",
+        JReactNativeFeatureFlagsCxxInterop::enableDeferredViewCleanupAndroid),
+      makeNativeMethod(
         "enableDestroyShadowTreeRevisionAsync",
         JReactNativeFeatureFlagsCxxInterop::enableDestroyShadowTreeRevisionAsync),
       makeNativeMethod(
@@ -1227,9 +1230,6 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "enableExclusivePropsUpdateAndroid",
         JReactNativeFeatureFlagsCxxInterop::enableExclusivePropsUpdateAndroid),
-      makeNativeMethod(
-        "enableDeferredViewCleanupAndroid",
-        JReactNativeFeatureFlagsCxxInterop::enableDeferredViewCleanupAndroid),
       makeNativeMethod(
         "enableFabricCommitBranching",
         JReactNativeFeatureFlagsCxxInterop::enableFabricCommitBranching),
